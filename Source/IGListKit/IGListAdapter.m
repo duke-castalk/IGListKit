@@ -1194,6 +1194,27 @@ typedef struct OffsetRange {
     return [collectionView dequeueReusableCellWithReuseIdentifier:nibName forIndexPath:indexPath];
 }
 
+- (UICollectionViewCell *)dequeueReusableCellWithNibName:(NSString *)nibName
+                                           forIdentifier:(NSString *)identifier
+                                                  bundle:(NSBundle *)bundle
+                                    forSectionController:(IGListSectionController *)sectionController
+                                                 atIndex:(NSInteger)index {
+    IGAssertMainThread();
+    IGParameterAssert([nibName length] > 0);
+    IGParameterAssert(sectionController != nil);
+    IGParameterAssert(index >= 0);
+    UICollectionView *collectionView = self.collectionView;
+    IGAssert(collectionView != nil, @"Dequeueing cell with nib name %@ and bundle %@ from section controller %@ without a collection view at index %li.", nibName, bundle, sectionController, (long)index);
+    NSIndexPath *indexPath = [self indexPathForSectionController:sectionController index:index usePreviousIfInUpdateBlock:NO];
+    NSString *nibIdentifier = [NSString stringWithFormat:@"%@_%@", nibName, identifier];
+    if (![self.registeredNibNames containsObject:nibIdentifier]) {
+        [self.registeredNibNames addObject:nibIdentifier];
+        UINib *nib = [UINib nibWithNibName:nibName bundle:bundle];
+        [collectionView registerNib:nib forCellWithReuseIdentifier:nibIdentifier];
+    }
+    return [collectionView dequeueReusableCellWithReuseIdentifier:nibIdentifier forIndexPath:indexPath];
+}
+
 - (__kindof UICollectionReusableView *)dequeueReusableSupplementaryViewOfKind:(NSString *)elementKind
                                                          forSectionController:(IGListSectionController *)sectionController
                                                                         class:(Class)viewClass

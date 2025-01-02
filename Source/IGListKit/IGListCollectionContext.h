@@ -215,6 +215,24 @@ NS_SWIFT_NAME(ListCollectionContext)
                                                           atIndex:(NSInteger)index;
 
 /**
+ Dequeues a cell from the collection view reuse pool.
+
+ @param nibName The name of the nib file.
+ @param bundle The bundle in which to search for the nib file. If `nil`, this method searches the main bundle.
+ @param sectionController The section controller requesting this information.
+ @param index The index of the cell.
+
+ @return A cell dequeued from the reuse pool or a newly created one.
+
+ @note This method uses the nib name as the reuse identifier.
+ */
+- (__kindof UICollectionViewCell *)dequeueReusableCellWithNibName:(NSString *)nibName
+                                                    forIdentifier:(NSString *)identifier
+                                                           bundle:(nullable NSBundle *)bundle
+                                             forSectionController:(IGListSectionController *)sectionController
+                                                          atIndex:(NSInteger)index;
+
+/**
  Dequeues a storyboard prototype cell from the collection view reuse pool.
 
  @param identifier The identifier of the cell prototype in storyboard.
